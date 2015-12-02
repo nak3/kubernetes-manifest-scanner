@@ -1,0 +1,4 @@
+rm -rf gopath
+rm -rf bin/*
+#rm -rf .git
+rm -rf Godeps
