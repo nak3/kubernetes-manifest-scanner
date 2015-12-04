@@ -16,8 +16,7 @@ eval $(go env)
 
 if [ ${GOOS} = "linux" ]; then
 #        echo "Getting godep..."
-#	go get github.com/tools/godep
-        echo "Getting dependencies..."
+	go get github.com/tools/godep
 	go get github.com/nak3/jvmap
 	go get github.com/spf13/cobra
 	go get k8s.io/kubernetes/pkg/kubectl/cmd/util
@@ -35,5 +34,5 @@ fi
 # echo "Making git repository..."
 #
 #TODO
-#echo "Running godep save..."
-#${GOBIN}/godep save github.com/nak3/kubernetes-manifest-scanner/pkg
+echo "Running godep save..."
+${GOBIN}/godep save github.com/nak3/kubernetes-manifest-scanner/pkg

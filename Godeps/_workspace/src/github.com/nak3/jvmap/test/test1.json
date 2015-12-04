@@ -1,0 +1,27 @@
+{
+    "models": {
+        "N": [
+            "NAGOYA",
+            "nagoya"
+        ],
+        "O": {
+            "OSAKA": {
+                "tokyo": [
+                    "123",
+                    "456"
+                ]
+            }
+        },
+        "T": {
+            "TOKYO": {
+                "tokyo": [
+                    "abc",
+                    "def"
+                ]
+            }
+        },
+        "tokyo": "foo",
+        "bar": "tokyo"
+    },
+    "tokyo": "hoge"
+}
