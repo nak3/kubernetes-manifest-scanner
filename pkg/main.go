@@ -13,7 +13,7 @@ func main() {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 
-	cmd := cmd.KmsNew(os.Stdin, os.Stdout, os.Stderr)
+	cmd := cmd.KmsNew(os.Stdout)
 	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}

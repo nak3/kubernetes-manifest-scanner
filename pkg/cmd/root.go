@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func KmsNew(in io.Reader, out, err io.Writer) *cobra.Command {
+func KmsNew(out io.Writer) *cobra.Command {
 	cmds := &cobra.Command{
 		Use:   "kubernetes-manifest-scanner",
 		Short: "Refer to kubernetes or OpenShift v3 manifest configuration",
@@ -14,9 +14,9 @@ func KmsNew(in io.Reader, out, err io.Writer) *cobra.Command {
 		Run:   runHelp,
 	}
 
-	cmds.AddCommand(cmd.NewCmdSample(out))
-	cmds.AddCommand(cmd.NewCmdSnippet(out))
-	cmds.AddCommand(cmd.NewCmdItemList(out))
+	cmds.AddCommand(NewCmdSample(out))
+	cmds.AddCommand(NewCmdSnippet(out))
+	cmds.AddCommand(NewCmdItemList(out))
 	return cmds
 }
 
