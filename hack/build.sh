@@ -20,5 +20,5 @@ Next steps: set up your path
 --------
 
 export PATH="${PWD}/bin/:$PATH"
-source bash-comp/kuberenetes-manifest-scanner
+source ${PWD}/completions/bash/kuberenetes-manifest-scanner
 '

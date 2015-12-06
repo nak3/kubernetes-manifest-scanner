@@ -12,6 +12,6 @@ if [ ! -h _output/local/go/src/${REPO_PATH} ]; then
 fi
 
 echo "Building bash_comp_autogenerator..."
-go build -o ${PWD}/bin/bash_comp_autogenerator ${PWD}/_output/local/go/src/github.com/nak3/kubernetes-manifest-scanner/pkg/gen_bash_comp.go
+go build -o ${PWD}/bin/bash_comp_autogenerator ${PWD}/_output/local/go/src/github.com/nak3/kubernetes-manifest-scanner/pkg/bash_completion_generator.go
 
 echo "Build completed!"
