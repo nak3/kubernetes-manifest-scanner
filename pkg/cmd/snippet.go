@@ -19,7 +19,7 @@ func NewCmdSnippet(out io.Writer) *cobra.Command {
 		Long:  "Reference item as swagger snippet",
 		//		Example: get_example,
 		Run: func(cmd *cobra.Command, args []string) {
-			cmdutil.CheckErr(ValidateArgs(cmd, args))
+			cmdutil.CheckErr(validateExtraArgs(cmd, args))
 			// cmdutil.CheckErr(cmdutil.ValidateOutputArgs(cmd))
 			cmdutil.CheckErr(RunSnippet(cmd))
 		},
@@ -30,6 +30,13 @@ func NewCmdSnippet(out io.Writer) *cobra.Command {
 	cmd.PersistentFlags().StringP("item", "i", "v1.Pod", "Search item name")
 
 	return cmd
+}
+
+func validateExtraArgs(cmd *cobra.Command, args []string) error {
+	if len(args) != 0 {
+		return cmdutil.UsageError(cmd, "Unexpected args: %v", args)
+	}
+	return nil
 }
 
 func refPart(jsondata map[string]interface{}) error {

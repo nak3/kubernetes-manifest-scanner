@@ -183,7 +183,6 @@ __kubernetes-manifest-scanner_itemlister()
     if [ ! -z "${flaghash["-f"]}" ] ; then
         itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["-f"]} 2>/dev/null)
     elif [ ! -z "${flaghash["--filename"]}" ] ; then
-        __debug "debug -> ${flaghash["--filename"]}"
         itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["--filename"]} 2>/dev/null)
     else
         itemlist_out=$(kubernetes-manifest-scanner itemlist 2>/dev/null)

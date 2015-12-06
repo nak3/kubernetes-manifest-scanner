@@ -14,20 +14,18 @@ import (
 func NewCmdSample(out io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "sample -f FILENAME -i RESOURCE",
+		Use:   "sample -f FILENAME RESOURCE",
 		Short: "Output manifest with all parameteres",
 		Long:  "Output manifest with all parameteres",
 		//		Example: get_example,
 		Run: func(cmd *cobra.Command, args []string) {
-			cmdutil.CheckErr(ValidateArgs(cmd, args))
+			cmdutil.CheckErr(validateArgs(cmd, args))
 			// cmdutil.CheckErr(cmdutil.ValidateOutputArgs(cmd))
-			cmdutil.CheckErr(RunSample(cmd))
+			cmdutil.CheckErr(RunSample(cmd, args[0]))
 		},
 	}
 	cmd.MarkFlagRequired("filename")
-	cmd.MarkFlagRequired("item")
 	cmd.PersistentFlags().StringP("filename", "f", "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/swagger-spec/v1.json", "Path to swagger API json")
-	cmd.PersistentFlags().StringP("item", "i", "v1.Pod", "Search item name")
 	cmd.PersistentFlags().IntP("depth", "d", 5, "Depth to expand $ref")
 
 	return cmd
@@ -42,14 +40,17 @@ func allwriter(jsondata map[string]interface{}, properties map[string]interface{
 	return nil
 }
 
-func ValidateArgs(cmd *cobra.Command, args []string) error {
-	if len(args) != 0 {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > 1 {
 		return cmdutil.UsageError(cmd, "Unexpected args: %v", args)
+	} else if len(args) < 1 {
+		return cmdutil.UsageError(cmd, "You need specify resource name. You can get the list by itemlist subcommand or bash completion")
 	}
+
 	return nil
 }
 
-func RunSample(cmd *cobra.Command) error {
+func RunSample(cmd *cobra.Command, rootKey string) error {
 	const searchKey = "properties"
 
 	filelocation := cmdutil.GetFlagString(cmd, "filename")
@@ -65,9 +66,8 @@ func RunSample(cmd *cobra.Command) error {
 		return fmt.Errorf("Json unmarshal error. Probably json input was invalid.")
 	}
 
-	rootKey := cmdutil.GetFlagString(cmd, "item")
 	if rootKey == "" {
-		return fmt.Errorf("Need to set RESOURCE NAME with -i option")
+		return fmt.Errorf("Need to set RESOURCE NAME as argmument")
 	}
 
 	outputresult := jvmap.JsonValueMap(jsondata, searchKey, rootKey)

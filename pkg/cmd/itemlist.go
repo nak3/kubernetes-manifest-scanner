@@ -19,7 +19,7 @@ func NewCmdItemList(out io.Writer) *cobra.Command {
 		Long:  "Output item list",
 		//		Example: get_example,
 		Run: func(cmd *cobra.Command, args []string) {
-			cmdutil.CheckErr(ValidateArgs(cmd, args))
+			cmdutil.CheckErr(validateExtraArgs(cmd, args))
 			// cmdutil.CheckErr(cmdutil.ValidateOutputArgs(cmd))
 			cmdutil.CheckErr(RunItemList(cmd))
 		},
