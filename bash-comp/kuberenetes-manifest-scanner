@@ -105,8 +105,10 @@ __handle_flag()
 
     # if a command required a flag, and we found it, unset must_have_one_flag()
     local flagname=${words[c]}
+    local flagvalue
     # if the word contained an =
     if [[ ${words[c]} == *"="* ]]; then
+        flagvalue=${flagname#*=} # take in as flagvalue after the =
         flagname=${flagname%=*} # strip everything after the =
         flagname="${flagname}=" # but put the = back
     fi
@@ -116,7 +118,13 @@ __handle_flag()
     fi
 
     # keep flag value with flagname as flaghash
-    flaghash[${flagname}]=${words[ $((c+1)) ]}
+    if [ ${flagvalue} ] ; then
+	flaghash[${flagname}]=${flagvalue}
+    elif [ ${words[ $((c+1)) ]} ] ; then
+	flaghash[${flagname}]=${words[ $((c+1)) ]}
+    else
+	flaghash[${flagname}]="true" # pad "true" for bool flag
+    fi
 
     # skip the argument to a two word flag
     if __contains_word "${words[c]}" "${two_word_flags[@]}"; then
@@ -182,8 +190,14 @@ __kubernetes-manifest-scanner_itemlister()
 
     if [ ! -z "${flaghash["-f"]}" ] ; then
         itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["-f"]} 2>/dev/null)
-    elif [ ! -z "${flaghash["--filename"]}" ] ; then
-        itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["--filename"]} 2>/dev/null)
+	if [ ! -z "${flaghash["-k"]}" -o ! -z "${flaghash["--insecure="]}" ] ; then
+            itemlist_out=$(kubernetes-manifest-scanner itemlist -k -f ${flaghash["-f"]} 2>/dev/null)
+	fi
+    elif [ ! -z "${flaghash["--filename="]}" ] ; then
+        itemlist_out=$(kubernetes-manifest-scanner itemlist --filename=${flaghash["--filename="]} 2>/dev/null)
+	if [ ! -z "${flaghash["-k"]}" -o ! -z "${flaghash["--insecure="]}" ] ; then
+        itemlist_out=$(kubernetes-manifest-scanner itemlist -k --filename=${flaghash["--filename="]} 2>/dev/null)
+	fi
     else
         itemlist_out=$(kubernetes-manifest-scanner itemlist 2>/dev/null)
     fi
@@ -287,7 +301,7 @@ _kubernetes-manifest-scanner()
 __start_kubernetes-manifest-scanner()
 {
     local cur prev words cword
-    declare -A flaghash 
+    declare -A flaghash
     if declare -F _init_completion >/dev/null 2>&1; then
         _init_completion -s || return
     else
