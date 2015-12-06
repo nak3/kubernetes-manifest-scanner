@@ -57,13 +57,13 @@ func RunSample(cmd *cobra.Command, rootKey string) error {
 
 	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
 	if err != nil {
-		return fmt.Errorf("Input file reading error")
+		return fmt.Errorf("%s", err)
 	}
 
 	jsondata := map[string]interface{}{}
 	err = json.Unmarshal(jsondataRaw, &jsondata)
 	if err != nil {
-		return fmt.Errorf("Json unmarshal error. Probably json input was invalid.")
+		return fmt.Errorf("%s", err)
 	}
 
 	if rootKey == "" {
@@ -79,7 +79,11 @@ func RunSample(cmd *cobra.Command, rootKey string) error {
 
 	podProperties := outputresult[0][0][searchKey].(map[string]interface{})
 	delete(podProperties, "status") //TODO: smart way?
-	allwriter(jsondata, podProperties, depth)
+
+	err = allwriter(jsondata, podProperties, depth)
+	if err != nil {
+		return fmt.Errorf("%s", err)
+	}
 
 	return nil
 }

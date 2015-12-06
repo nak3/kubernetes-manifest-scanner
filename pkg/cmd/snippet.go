@@ -51,13 +51,13 @@ func RunSnippet(cmd *cobra.Command) error {
 
 	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
 	if err != nil {
-		return fmt.Errorf("Input file reading error")
+		return fmt.Errorf("%s", err)
 	}
 
 	jsondata := map[string]interface{}{}
 	err = json.Unmarshal(jsondataRaw, &jsondata)
 	if err != nil {
-		return fmt.Errorf("Json unmarshal error. Probably json input was invalid.")
+		return fmt.Errorf("%s", err)
 	}
 
 	searchKey := cmdutil.GetFlagString(cmd, "item")
@@ -75,10 +75,15 @@ func RunSnippet(cmd *cobra.Command) error {
 		fmt.Printf("\"%s\" found at %d locations\n", searchKey, n)
 		for k, _ := range descripitonresult {
 			fmt.Printf("\n")
-			refPart(foundSnippetList[k])
+			if err = refPart(foundSnippetList[k]); err != nil {
+				return fmt.Errorf("%s", err)
+			}
+
 		}
 	} else {
-		refPart(descripitonresult[0][0])
+		if err = refPart(descripitonresult[0][0]); err != nil {
+			return fmt.Errorf("%s", err)
+		}
 	}
 
 	return nil

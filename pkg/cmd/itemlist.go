@@ -48,13 +48,13 @@ func RunItemList(cmd *cobra.Command) error {
 
 	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
 	if err != nil {
-		return fmt.Errorf("Input file reading error")
+		return fmt.Errorf("%s", err)
 	}
 
 	jsondata := map[string]interface{}{}
 	err = json.Unmarshal(jsondataRaw, &jsondata)
 	if err != nil {
-		return fmt.Errorf("Json unmarshal error. Probably json input was invalid.")
+		return fmt.Errorf("%s", err)
 	}
 
 	topList(jsondata)
