@@ -115,6 +115,9 @@ __handle_flag()
         must_have_one_flag=()
     fi
 
+    # keep flag value with flagname as flaghash
+    flaghash[${flagname}]=${words[ $((c+1)) ]}
+
     # skip the argument to a two word flag
     if __contains_word "${words[c]}" "${two_word_flags[@]}"; then
         c=$((c+1))
@@ -124,7 +127,6 @@ __handle_flag()
         fi
     fi
 
-    # skip the flag itself
     c=$((c+1))
 
 }
@@ -171,6 +173,37 @@ __handle_word()
         __handle_noun
     fi
     __handle_word
+}
+
+
+__kubernetes-manifest-scanner_itemlister()
+{
+    local itemlist_out
+
+    if [ ! -z "${flaghash["-f"]}" ] ; then
+        itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["-f"]} 2>/dev/null)
+    elif [ ! -z "${flaghash["--filename"]}" ] ; then
+        __debug "debug -> ${flaghash["--filename"]}"
+        itemlist_out=$(kubernetes-manifest-scanner itemlist -f ${flaghash["--filename"]} 2>/dev/null)
+    else
+        itemlist_out=$(kubernetes-manifest-scanner itemlist 2>/dev/null)
+    fi
+
+    if [ ! -z "${itemlist_out}" ] ; then
+        COMPREPLY=( $( compgen -W "${itemlist_out[*]}" -- "$cur" ) )
+    fi
+}
+
+__custom_func() {
+    case ${last_command} in
+
+        kubernetes-manifest-scanner_sample)
+           __kubernetes-manifest-scanner_itemlister $1
+           return
+            ;;
+        *)
+            ;;
+    esac
 }
 
 _kubernetes-manifest-scanner_sample()
@@ -255,6 +288,7 @@ _kubernetes-manifest-scanner()
 __start_kubernetes-manifest-scanner()
 {
     local cur prev words cword
+    declare -A flaghash 
     if declare -F _init_completion >/dev/null 2>&1; then
         _init_completion -s || return
     else
@@ -280,5 +314,7 @@ if [[ $(type -t compopt) = "builtin" ]]; then
 else
     complete -o nospace -F __start_kubernetes-manifest-scanner kubernetes-manifest-scanner
 fi
+
+COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
 
 # ex: ts=4 sw=4 et filetype=sh

@@ -38,7 +38,7 @@ func topList(jsondata map[string]interface{}) {
 	outputresult := jvmap.JsonValueMap(jsondata, searchKey)
 	for k, _ := range outputresult[0][0][searchKey].(map[string]interface{}) {
 		if jvmap.JsonValueMap(jsondata, "kind", k) != nil {
-			fmt.Printf("%v \n", k)
+			fmt.Printf("%v ", k)
 		}
 	}
 }

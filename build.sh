@@ -16,3 +16,11 @@ go build -o ${PWD}/bin/${APP_NAME} ${PWD}/_output/local/go/src/github.com/nak3/k
 
 echo "Building bash_comp_autogenerator..."
 go build -o ${PWD}/bin/bash_comp_autogenerator ${PWD}/_output/local/go/src/github.com/nak3/kubernetes-manifest-scanner/pkg/gen_bash_comp.go
+
+echo "Build completed!
+
+Next steps: set up your path
+
+export PATH="${PWD}/bin/:$PATH"
+source bash-comp/kuberenetes-manifest-scanner
+"
