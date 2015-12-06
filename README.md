@@ -2,6 +2,8 @@ kubernetes-manifest-scanner
 ==============
 kubernetes-manifest-scanner is CLI to refer manifest file from swagger API
 
+![kubernetes-manifest-scanner](https://raw.githubusercontent.com/wiki/nak3/kubernetes-manifest-scanner/gif/kms-command.gif)
+
 Quick start
 -----
 
