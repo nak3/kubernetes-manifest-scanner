@@ -27,8 +27,16 @@ func NewCmdItemList(out io.Writer) *cobra.Command {
 
 	cmd.MarkFlagRequired("filename")
 	cmd.PersistentFlags().StringP("filename", "f", "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/swagger-spec/v1.json", "Path to swagger API json")
+	cmd.PersistentFlags().BoolP("insecure", "k", false, "Allow insecure SSL connections to swagger JSON file")
 
 	return cmd
+}
+
+func validateExtraArgs(cmd *cobra.Command, args []string) error {
+	if len(args) != 0 {
+		return cmdutil.UsageError(cmd, "Unexpected args: %v", args)
+	}
+	return nil
 }
 
 func topList(jsondata map[string]interface{}) {
@@ -45,8 +53,9 @@ func topList(jsondata map[string]interface{}) {
 
 func RunItemList(cmd *cobra.Command) error {
 	filelocation := cmdutil.GetFlagString(cmd, "filename")
+	insecure := cmdutil.GetFlagBool(cmd, "insecure")
 
-	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
+	jsondataRaw, err := ReadConfigDataFromLocation(filelocation, insecure)
 	if err != nil {
 		return fmt.Errorf("%s", err)
 	}

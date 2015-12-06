@@ -14,28 +14,30 @@ import (
 func NewCmdSnippet(out io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "snippet -f FILENAME -i RESOURCE",
+		Use:   "snippet -f FILENAME RESOURCE",
 		Short: "Reference item as swagger snippet",
 		Long:  "Reference item as swagger snippet",
 		//		Example: get_example,
 		Run: func(cmd *cobra.Command, args []string) {
-			cmdutil.CheckErr(validateExtraArgs(cmd, args))
+			cmdutil.CheckErr(validateArgsSnippet(cmd, args))
 			// cmdutil.CheckErr(cmdutil.ValidateOutputArgs(cmd))
-			cmdutil.CheckErr(RunSnippet(cmd))
+			cmdutil.CheckErr(RunSnippet(cmd, args[0]))
 		},
 	}
 	cmd.MarkFlagRequired("filename")
-	cmd.MarkFlagRequired("item")
 	cmd.PersistentFlags().StringP("filename", "f", "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/swagger-spec/v1.json", "Path to swagger API json")
-	cmd.PersistentFlags().StringP("item", "i", "v1.Pod", "Search item name")
+	cmd.PersistentFlags().BoolP("insecure", "k", false, "Allow insecure SSL connections to swagger JSON file")
 
 	return cmd
 }
 
-func validateExtraArgs(cmd *cobra.Command, args []string) error {
-	if len(args) != 0 {
+func validateArgsSnippet(cmd *cobra.Command, args []string) error {
+	if len(args) > 1 {
 		return cmdutil.UsageError(cmd, "Unexpected args: %v", args)
+	} else if len(args) < 1 {
+		return cmdutil.UsageError(cmd, "You need specify resource name. e.g. v1.Pod")
 	}
+
 	return nil
 }
 
@@ -46,10 +48,11 @@ func refPart(jsondata map[string]interface{}) error {
 	return nil
 }
 
-func RunSnippet(cmd *cobra.Command) error {
+func RunSnippet(cmd *cobra.Command, searchKey string) error {
 	filelocation := cmdutil.GetFlagString(cmd, "filename")
+	insecure := cmdutil.GetFlagBool(cmd, "insecure")
 
-	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
+	jsondataRaw, err := ReadConfigDataFromLocation(filelocation, insecure)
 	if err != nil {
 		return fmt.Errorf("%s", err)
 	}
@@ -59,8 +62,6 @@ func RunSnippet(cmd *cobra.Command) error {
 	if err != nil {
 		return fmt.Errorf("%s", err)
 	}
-
-	searchKey := cmdutil.GetFlagString(cmd, "item")
 
 	descripitonresult := jvmap.JsonValueMap(jsondata, searchKey)
 

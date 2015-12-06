@@ -14,10 +14,11 @@ fi
 echo "Building ${APP_NAME}..."
 go build -o ${PWD}/bin/${APP_NAME} ${PWD}/_output/local/go/src/github.com/nak3/kubernetes-manifest-scanner/pkg/main.go
 
-echo "Build completed!
+echo 'Build completed!
 
 Next steps: set up your path
+--------
 
-export PATH=\"${PWD}/bin/:$PATH\"
+export PATH="${PWD}/bin/:$PATH"
 source bash-comp/kuberenetes-manifest-scanner
-"
+'

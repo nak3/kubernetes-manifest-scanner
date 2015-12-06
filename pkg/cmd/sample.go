@@ -27,6 +27,7 @@ func NewCmdSample(out io.Writer) *cobra.Command {
 	cmd.MarkFlagRequired("filename")
 	cmd.PersistentFlags().StringP("filename", "f", "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/swagger-spec/v1.json", "Path to swagger API json")
 	cmd.PersistentFlags().IntP("depth", "d", 5, "Depth to expand $ref")
+	cmd.PersistentFlags().BoolP("insecure", "k", false, "Allow insecure SSL connections to swagger JSON file")
 
 	return cmd
 }
@@ -54,8 +55,9 @@ func RunSample(cmd *cobra.Command, rootKey string) error {
 	const searchKey = "properties"
 
 	filelocation := cmdutil.GetFlagString(cmd, "filename")
+	insecure := cmdutil.GetFlagBool(cmd, "insecure")
 
-	jsondataRaw, err := cmdutil.ReadConfigDataFromLocation(filelocation)
+	jsondataRaw, err := ReadConfigDataFromLocation(filelocation, insecure)
 	if err != nil {
 		return fmt.Errorf("%s", err)
 	}
