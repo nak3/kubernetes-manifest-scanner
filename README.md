@@ -1,5 +1,8 @@
 kubernetes-manifest-scanner
 ==============
+
+[![Build Status](https://travis-ci.org/nak3/kubernetes-manifest-scanner.svg?branch=master)](https://travis-ci.org/nak3/kubernetes-manifest-scanner)
+
 kubernetes-manifest-scanner is CLI to refer manifest file from swagger API
 
 ![kubernetes-manifest-scanner](https://raw.githubusercontent.com/wiki/nak3/kubernetes-manifest-scanner/gif/kms-command.gif)
@@ -12,14 +15,14 @@ Quick start
 ~~~
 git clone https://github.com/nak3/kubernetes-manifest-scanner.git
 cd kubernetes-manifest-scanner
-./build.sh
+make build
 ~~~
 
-##### 2. Setup path and bash completion
+##### 2. Setup bin path and bash completion (optional)
 
 ~~~
 export PATH="${PWD}/bin/:$PATH"
-source bash-comp/kuberenetes-manifest-scanner
+source completions/bash/kuberenetes-manifest-scanner
 ~~~
 
 ##### 3. Now, you can use it!

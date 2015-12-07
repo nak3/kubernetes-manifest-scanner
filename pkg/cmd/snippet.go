@@ -15,8 +15,8 @@ func NewCmdSnippet(out io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "snippet -f FILENAME RESOURCE",
-		Short: "Refer a configuration parameter as snippet"
-		Long:  "Refer a configuration parameter as snippet"
+		Short: "Refer a configuration parameter as snippet",
+		Long:  "Refer a configuration parameter as snippet",
 		//		Example: get_example,
 		Run: func(cmd *cobra.Command, args []string) {
 			cmdutil.CheckErr(validateArgsSnippet(cmd, args))
